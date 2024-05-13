@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import PasswordInput from "../../components/input/PasswordInput";
 import { Link } from "react-router-dom";
+import { validateEmail } from "../../utils/helper";
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -11,6 +12,25 @@ export default function SignUp() {
 
   const handleSignup = async (e) => {
     e.preventDefault();
+
+    if (!name) {
+      setError("Pleasse enter your name.");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError("Pleasse enter a valid email address.");
+      return;
+    }
+
+    if (!password) {
+      setError("Pleasse enter your password.");
+      return;
+    }
+
+    setError("");
+
+    //Signup API Call
   };
   return (
     <>
@@ -22,6 +42,7 @@ export default function SignUp() {
             <input type="text" placeholder="Name" className="input-box" value={name} onChange={(e) => setName(e.target.value)} />
             <input type="text" placeholder="Email" className="input-box" value={email} onChange={(e) => setEmail(e.target.value)} />
             <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} />
+            {error && <p className="text-red-500 text-xs pb-1">{error}</p>}
             <button type="submit" className="btn-primary">
               Create Account
             </button>
