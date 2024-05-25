@@ -8,6 +8,7 @@ export default function App() {
   const routes = (
     <Router>
       <Routes>
+        <Route path="/" exact element={<div>Notes App</div>} />
         <Route path="/dashboard" exact element={<Home />} />
         <Route path="/login" exact element={<Login />} />
         <Route path="/signup" exact element={<SignUp />} />
