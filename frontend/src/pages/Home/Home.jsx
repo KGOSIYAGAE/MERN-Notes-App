@@ -45,7 +45,13 @@ export default function Home() {
         contentLabel=""
         className="w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5"
       >
-        <AddEditNote />
+        <AddEditNote
+          type={openAddEditModal.type}
+          noteData={openAddEditModal.data}
+          onClose={() => {
+            setOpenAddEditModal({ isShown: false, type: "add", data: null });
+          }}
+        />
       </Modal>
     </>
   );
