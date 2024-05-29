@@ -1,6 +1,6 @@
 const express = require("express");
 const { requireAuth } = require("../utilities");
-const { addNewNote } = require("../controllers/notes.controller");
+const { addNewNote, editNote } = require("../controllers/notes.controller");
 
 const router = express.Router();
 
@@ -8,6 +8,8 @@ const router = express.Router();
 router.use(requireAuth);
 
 //Create new note
-router.post("/getNote", addNewNote);
+router.post("/add-note", addNewNote);
 
+//Edit note
+router.put("/edit-note/:noteId", editNote);
 module.exports = router;
