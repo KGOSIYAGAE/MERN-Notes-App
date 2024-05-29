@@ -1,6 +1,6 @@
 const express = require("express");
 const { requireAuth } = require("../utilities");
-const { addNewNote, editNote, getAllNotes, deleteNote } = require("../controllers/notes.controller");
+const { addNewNote, editNote, getAllNotes, deleteNote, updateIsPinned } = require("../controllers/notes.controller");
 
 const router = express.Router();
 
@@ -18,4 +18,8 @@ router.get("/get-all-notes", getAllNotes);
 
 //delete note
 router.delete("/delete-note/:noteId", deleteNote);
+
+//Edit note
+router.put("/update-isPinned/:noteId", updateIsPinned);
+
 module.exports = router;

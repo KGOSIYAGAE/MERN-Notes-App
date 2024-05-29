@@ -78,7 +78,7 @@ const deleteNote = async (req, res) => {
   const userId = req.user._id;
 
   try {
-    const note = await Note.find({ _id: noteId, userId });
+    const note = await Note.findOne({ _id: noteId, userId });
 
     if (!note) {
       return res.status(404).json({ error: true, message: "Note not found" });
@@ -88,7 +88,27 @@ const deleteNote = async (req, res) => {
 
     return res.status(200).json({ error: false, message: "Noted deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: true, message: "Internal Server Erro" });
+    res.status(500).json({ error: true, message: "Internal Server Error" });
   }
 };
-module.exports = { addNewNote, editNote, getAllNotes, deleteNote };
+
+//Update isPinned
+const updateIsPinned = async (req, res) => {
+  const { isPinned } = req.body;
+  const noteId = req.params.noteId;
+  const userId = req.user._id;
+
+  try {
+    const note = await Note.findOne({ _id: noteId, userId });
+
+    note.isPinned = isPinned;
+
+    await note.save();
+
+    return res.status(200).json({ error: false, note, message: "Note pinned" });
+  } catch (error) {
+    res.status(500).json({ error: true, message: "Internal server error" });
+  }
+};
+
+module.exports = { addNewNote, editNote, getAllNotes, deleteNote, updateIsPinned };
