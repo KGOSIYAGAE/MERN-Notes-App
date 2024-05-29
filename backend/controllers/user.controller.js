@@ -1,5 +1,4 @@
-const jwt = require("jsonwebtoken");
-const { authenticateToken, createToken } = require("../utilities");
+const { createToken } = require("../utilities");
 const User = require("../models/user.model");
 
 //signup Controller
@@ -45,7 +44,7 @@ const userSignup = async (req, res) => {
 
 //Login Controller
 const userLogin = async (req, res) => {
-  const { fullName, email, password } = req.body;
+  const { email, password } = req.body;
 
   try {
     if (!email) {
@@ -62,12 +61,16 @@ const userLogin = async (req, res) => {
       return res.status(400).json({ error: "User not found" });
     }
 
-    //Create and sign token
-    const accessToken = createToken(user._id);
-
-    return res.status(200).json({ error: false, user, accessToken, message: "Login Successful" });
+    //validate user
+    if (userInfo.email === email && userInfo.password === password) {
+      //Create and sign token
+      const accessToken = createToken(userInfo._id);
+      return res.status(200).json({ error: false, userInfo, accessToken, message: "Login Successful" });
+    } else {
+      return res.status(400).json({ error: true, message: "Invalid Credentials" });
+    }
   } catch (error) {
-    return res.status(400).json({ error: true, message: "Invalid Credentials" });
+    return res.status(400).json({ error: true, message: error.message });
   }
 };
 

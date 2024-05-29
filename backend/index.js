@@ -3,6 +3,7 @@ const cors = require("cors");
 require("dotenv").config();
 const mongoose = require("mongoose");
 const UserRouter = require("./routes/user.routes");
+const NoteRouter = require("./routes/note.routes");
 
 const app = express();
 const PORT = process.env.PORT;
@@ -17,7 +18,11 @@ app.get("/", (req, res) => {
   res.json({ data: "Hellow" });
 });
 
+//User
 app.use("/user", UserRouter);
+
+//Notes
+app.use("/notes", NoteRouter);
 
 //DB connection and server initiation
 mongoose
