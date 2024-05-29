@@ -60,4 +60,15 @@ const editNote = async (req, res) => {
   }
 };
 
-module.exports = { addNewNote, editNote };
+//Get all notes
+const getAllNotes = async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const notes = await Note.find({ userId }).sort({ isPinned: -1 });
+    return res.status(200).json({ error: false, notes, message: "All notes retrieved successfully" });
+  } catch (error) {
+    res.status(500).json({ error: true, message: "Internal server error" });
+  }
+};
+module.exports = { addNewNote, editNote, getAllNotes };
