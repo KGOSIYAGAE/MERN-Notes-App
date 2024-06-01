@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import PasswordInput from "../../components/input/PasswordInput";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { validateEmail } from "../../utils/helper";
+import axiosInstance from "../../../axiosinstances";
 
 export default function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -31,10 +34,33 @@ export default function SignUp() {
     setError("");
 
     //Signup API Call
+
+    try {
+      const response = await axiosInstance.post("/user/create-account", {
+        fullName: name,
+        email: email,
+        password: password,
+      });
+
+      if (response.data && response.data.error) {
+        setError(response.data.message);
+      }
+
+      if (response.data && response.data.accessToken) {
+        localStorage.setItem("token", response.data.accessToken);
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      //Handle login errors
+      if (error.response && error.response.data && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError("An unexpected error occured. Please try again");
+      }
+    }
   };
   return (
     <>
-      <Navbar />
       <div className="flex items-center justify-center mt-28">
         <div className="w-96 border rounded bg-white px-7 py-10">
           <form onSubmit={handleSignup}>
