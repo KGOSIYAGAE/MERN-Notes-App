@@ -74,4 +74,20 @@ const userLogin = async (req, res) => {
   }
 };
 
-module.exports = { userSignup, userLogin };
+const getUser = async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const isUser = await User.findOne({ _id: userId });
+
+    if (!isUser) {
+      res.status(401);
+    }
+
+    return res.status(200).json({ user: { _id: isUser._id, fullName: isUser.fullName, email: isUser.email, createdOn: isUser.createdOn } });
+  } catch (error) {
+    res.status(400).json({ error: true, message: error.message });
+  }
+};
+
+module.exports = { userSignup, userLogin, getUser };
