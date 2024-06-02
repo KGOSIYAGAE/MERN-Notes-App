@@ -1,18 +1,58 @@
 import React, { useState } from "react";
 import TagInput from "../../components/input/TagInput";
 import { MdClose } from "react-icons/md";
+import axiosInstance from "../../../axiosinstances";
 
-function AddEditNote({ noteData, type, onClose }) {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [tags, setTags] = useState([]);
+function AddEditNote({ noteData, type, onClose, getAllNotes }) {
+  const [title, setTitle] = useState(noteData?.title || "");
+  const [content, setContent] = useState(noteData?.content || "");
+  const [tags, setTags] = useState(noteData?.tags || []);
   const [error, setError] = useState(null);
 
   //Add New Note
-  const addNewNote = async () => {};
+  const addNewNote = async () => {
+    try {
+      const response = await axiosInstance.post("/notes/add-note", {
+        title: title,
+        content: content,
+        tags: tags,
+      });
+
+      if (response.data && response.data.note) {
+        getAllNotes();
+        onClose();
+      }
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+        setError(error.response.message);
+      } else {
+        console.log("Something went wrong try again");
+      }
+    }
+  };
 
   //Edit Note
-  const editNote = async () => {};
+  const editNote = async () => {
+    const noteId = noteData._id;
+    try {
+      const response = await axiosInstance.put("/notes/edit-note/" + noteId, {
+        title: title,
+        content: content,
+        tags: tags,
+      });
+
+      if (response.data && response.data.note) {
+        getAllNotes();
+        onClose();
+      }
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+        setError(error.response.message);
+      } else {
+        console.log("Something went wrong, Please try again");
+      }
+    }
+  };
 
   const handleAddNote = () => {
     if (!title) {
@@ -66,7 +106,7 @@ function AddEditNote({ noteData, type, onClose }) {
           handleAddNote();
         }}
       >
-        ADD
+        {type === "edit" ? "UPDATE" : "ADD"}
       </button>
     </div>
   );

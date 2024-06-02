@@ -19,6 +19,12 @@ export default function Home() {
   const [userInfo, setUserInfo] = useState(null);
   const navigate = useNavigate();
 
+  //Edit user open modal option
+
+  const handleEdit = (noteDetails) => {
+    setOpenAddEditModal({ isShown: true, type: "edit", data: noteDetails });
+  };
+
   //Api call Get userInfo
 
   const getUserInfo = async () => {
@@ -50,6 +56,30 @@ export default function Home() {
     }
   };
 
+  //Pin note
+  const handleNotePin = async (noteItem) => {
+    try {
+      if (noteItem.isPinned === false) {
+        noteItem.isPinned = true;
+      } else {
+        noteItem.isPinned = false;
+      }
+
+      const response = await axiosInstance.put("/notes/update-isPinned/" + noteItem._id, {
+        isPinned: noteItem.isPinned,
+      });
+
+      if (response.data && response.data.note) {
+        getAllNotes();
+      }
+    } catch (error) {
+      if (error.response && error.response.data && error.response.error) {
+        console.log(error.response.message);
+      }
+      console.log("Something went wrong, Please try again.");
+    }
+  };
+
   useEffect(() => {
     getUserInfo();
     getAllNotes();
@@ -63,14 +93,19 @@ export default function Home() {
           {allNotes.map((item, index) => (
             <NoteCard
               key={item._id}
+              _id={item._id}
               title={item.title}
               date={item.createdOn}
               content={item.content}
               tags={item.tags}
               isPinned={item.isPinned}
-              onEdit={() => {}}
+              onEdit={() => {
+                handleEdit(item);
+              }}
               onDelete={() => {}}
-              onPinNote={() => {}}
+              onPinNote={() => {
+                handleNotePin(item);
+              }}
             />
           ))}
         </div>
@@ -94,9 +129,11 @@ export default function Home() {
         <AddEditNote
           type={openAddEditModal.type}
           noteData={openAddEditModal.data}
+          ariaHideApp={false}
           onClose={() => {
             setOpenAddEditModal({ isShown: false, type: "add", data: null });
           }}
+          getAllNotes={getAllNotes}
         />
       </Modal>
     </>
