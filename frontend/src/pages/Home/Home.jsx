@@ -7,6 +7,7 @@ import AddEditNote from "./AddEditNote";
 import Modal from "react-modal";
 
 import axiosInstance from "../../../axiosinstances.js";
+import Toast from "../../components/ToastMessage/Toast.jsx";
 
 export default function Home() {
   const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -15,14 +16,29 @@ export default function Home() {
     data: null,
   });
 
+  const [showToast, setShowToast] = useState({
+    isShown: false,
+    message: "",
+    type: "add",
+  });
+
   const [allNotes, SetAllNotes] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
   const navigate = useNavigate();
 
   //Edit user open modal option
-
   const handleEdit = (noteDetails) => {
     setOpenAddEditModal({ isShown: true, type: "edit", data: noteDetails });
+  };
+
+  //On show toast
+  const handleShowToast = (message, type) => {
+    setShowToast({ isShown: true, message, type });
+  };
+
+  //On toast close
+  const handleCloseToast = () => {
+    setShowToast({ isShown: false, message: "" });
   };
 
   //Api call Get userInfo
@@ -136,6 +152,8 @@ export default function Home() {
           getAllNotes={getAllNotes}
         />
       </Modal>
+
+      <Toast isShown={showToast.isShown} message={showToast.message} type={showToast.type} onClose={handleCloseToast} />
     </>
   );
 }
