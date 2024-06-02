@@ -32,7 +32,7 @@ export default function Home() {
   };
 
   //On show toast
-  const handleShowToast = (message, type) => {
+  const showToastMessage = (message, type) => {
     setShowToast({ isShown: true, message, type });
   };
 
@@ -150,6 +150,7 @@ export default function Home() {
             setOpenAddEditModal({ isShown: false, type: "add", data: null });
           }}
           getAllNotes={getAllNotes}
+          showToastMessage={showToastMessage}
         />
       </Modal>
 
