@@ -72,6 +72,25 @@ export default function Home() {
     }
   };
 
+  //Delete note
+
+  const deleteNote = async (data) => {
+    const noteId = data._id;
+
+    try {
+      const response = await axiosInstance.delete("/notes/delete-note/" + noteId);
+      if (response.data && !response.data.error) {
+        showToastMessage("Note Deleted Successfully", "delete");
+        getAllNotes();
+      }
+    } catch (error) {
+      if (error.response && error.response.error) {
+        console.log(error.response.message);
+      }
+      console.log("Something went wrong, Please try again");
+    }
+  };
+
   //Pin note
   const handleNotePin = async (noteItem) => {
     try {
@@ -118,7 +137,9 @@ export default function Home() {
               onEdit={() => {
                 handleEdit(item);
               }}
-              onDelete={() => {}}
+              onDelete={() => {
+                deleteNote(item);
+              }}
               onPinNote={() => {
                 handleNotePin(item);
               }}
