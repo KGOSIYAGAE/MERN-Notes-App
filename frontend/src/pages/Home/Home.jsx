@@ -115,6 +115,7 @@ export default function Home() {
     }
   };
 
+  //Runs only once we the page is rendered
   useEffect(() => {
     getUserInfo();
     getAllNotes();
