@@ -92,6 +92,24 @@ const deleteNote = async (req, res) => {
   }
 };
 
+//Search Notes
+const searchNote = async (req, res) => {
+  const { _id } = req.user;
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(400).json({ error: true, message: "Search query required" });
+  }
+
+  try {
+    const matchingNotes = await Note.find({ userId: _id, $or: [{ title: { $regex: new RegExp(query, "i") } }, { content: { $regex: new RegExp(query, "i") } }] });
+
+    return res.status(200).json({ error: false, notes: matchingNotes, message: "Notes matching the search query retrieved successfully" });
+  } catch (error) {
+    return res.status(500).json({ error: true, message: "Internal Server Error" });
+  }
+};
+
 //Update isPinned
 const updateIsPinned = async (req, res) => {
   const { isPinned } = req.body;
@@ -111,4 +129,4 @@ const updateIsPinned = async (req, res) => {
   }
 };
 
-module.exports = { addNewNote, editNote, getAllNotes, deleteNote, updateIsPinned };
+module.exports = { addNewNote, editNote, getAllNotes, deleteNote, searchNote, updateIsPinned };

@@ -26,6 +26,7 @@ export default function Home() {
 
   const [allNotes, SetAllNotes] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
+  const [isSearch, setIsSearch] = useState(false);
   const navigate = useNavigate();
 
   //Edit user open modal option
@@ -93,6 +94,27 @@ export default function Home() {
     }
   };
 
+  //Search Notes
+
+  const onSearchNotes = async (query) => {
+    try {
+      const response = await axiosInstance.get("/notes/search-notes/", { params: { query } });
+
+      if (response.data && response.data.notes) {
+        setIsSearch(true);
+        SetAllNotes(response.data.notes);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //Clear Search
+  const handleClearSearch = () => {
+    setIsSearch(false);
+    getAllNotes();
+  };
+
   //Pin note
   const handleNotePin = async (noteItem) => {
     try {
@@ -125,7 +147,7 @@ export default function Home() {
 
   return (
     <>
-      <Navbar userInfo={userInfo} />
+      <Navbar userInfo={userInfo} onSearch={onSearchNotes} onClear={handleClearSearch} />
       <div className="container mx-auto">
         {allNotes.length > 0 ? (
           <div className="grid grid-cols-3 gap-4 mt-8">

@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import ProfileInfo from "../Cards/ProfileInfo";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../SearchBar/SearchBar";
+import axiosInstance from "../../../axiosinstances";
 
-export default function Navbar({ userInfo }) {
+export default function Navbar({ userInfo, onSearch, onClear }) {
   const [SearchQuery, setSearchQuery] = useState("");
 
   const navigate = useNavigate();
@@ -12,10 +13,15 @@ export default function Navbar({ userInfo }) {
     navigate("/login");
   };
 
-  const handleSearch = () => {};
+  const handleSearch = async () => {
+    if (SearchQuery) {
+      onSearch(SearchQuery);
+    }
+  };
 
   const onClearSearch = () => {
     setSearchQuery("");
+    onClear();
   };
   return (
     <div className="bg-white flex items-center justify-between px-6 py-6 drop-shadow">
