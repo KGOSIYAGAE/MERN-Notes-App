@@ -13,7 +13,7 @@ const DB_URL = process.env.DB_URL;
 app.use(express.json());
 app.use(cors({ origin: "*" }));
 
-//Roustes
+//default route
 app.get("/", (req, res) => {
   res.json({ data: "Hellow" });
 });
